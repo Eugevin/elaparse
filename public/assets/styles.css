@@ -1,0 +1,14 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+#app {
+  padding: 5rem 0;
+}
+
+#app img {
+  width: 10rem;
+  height: 10rem;
+  margin-bottom: 3rem;
+}

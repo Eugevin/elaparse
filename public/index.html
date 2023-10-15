@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElaParse</title>
+  <link rel="stylesheet" href="/assets/milligram.min.css">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script defer src="/assets/bundle.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <img src="/assets/logo.svg" alt="logo">
+      <blockquote>
+        <p><em>ElaParse - sample and fast application for parse some sort of data.</em></p>
+      </blockquote>
+      <p>Tutorial / How To Use:</p>
+      <ol>
+        <li>You need to select site for parse data and find required selectors (<em>via browser dev-tools</em>)</li>
+        <li>Paste site & selector in forms below (how to use selectors you can find <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors" target="_blank">here</a>)</li>
+        <li>Youre welcome 🐰</li>
+      </ol>
+      <form>
+        <fieldset>
+          <legend>ElaParse options</legend>
+          <input type="text" placeholder="Target webpage..." id="webpage">
+          <input type="text" placeholder="Target selector..." id="selector">
+          <div class="float-right">
+            <p>Status: <span>pending</span></p>
+          </div>
+          <input class="button-primary" type="submit" value="Send">
+        </fieldset>
+      </form>
+      <button class="button button-outline" id="app-close">Close Application</button>
+      <table>
+        <thead>
+          <tr></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
