@@ -4,81 +4,69 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"os"
 
 	"github.com/gocolly/colly"
 )
 
 type RequestData struct {
-  Webpage string `json:"webpage"`
-  Selector string `json:"selector"`
+	Webpage  string `json:"webpage"`
+	Selector string `json:"selector"`
 }
 
 type ResponseData struct {
-  Message string `json:"message"`
-  Result []string `json:"result"`
+	Message string      `json:"message"`
+	Result  []string    `json:"result"`
+	Params  RequestData `json:"params"`
 }
 
-func HandleApiClose (w http.ResponseWriter, r *http.Request) {
-  w.Header().Set("Content-Type", "application/json")
-  w.WriteHeader(http.StatusOK)
+func HandleApi(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 
-  var (
-    response ResponseData
-  )
+	var (
+		data     RequestData
+		response ResponseData
+	)
 
-  response = ResponseData{"application is closing", nil}
+	bodyBytes, _ := io.ReadAll(r.Body)
+	bodyString := string(bodyBytes)
 
-  json.NewEncoder(w).Encode(response)
+	json.Unmarshal([]byte(bodyString), &data)
 
-  os.Exit(0)
-}
+	response = ResponseData{"", nil, data}
 
-func HandleApi (w http.ResponseWriter, r *http.Request) {
-  w.Header().Set("Content-Type", "application/json")
-  w.WriteHeader(http.StatusCreated)
+	if data.Webpage == "" || data.Selector == "" {
+		response.Message = "webpage or selector fields are empty"
+		json.NewEncoder(w).Encode(response)
 
-  var (
-    data RequestData
-    response ResponseData
-  )
+		return
+	}
 
-  bodyBytes, _ := io.ReadAll(r.Body)
-  bodyString := string(bodyBytes)
+	parsedData := parseData(data.Webpage, data.Selector)
 
-  json.Unmarshal([]byte(bodyString), &data)
+	if len(parsedData) == 0 {
+		response.Message = "no data"
+		json.NewEncoder(w).Encode(response)
 
-  if data.Webpage == "" || data.Selector == "" {
-    response = ResponseData{"webpage or selector fields are empty", nil}
-    json.NewEncoder(w).Encode(response)
+		return
+	}
 
-    return
-  }
+	response.Message = "done"
+	response.Result = parsedData
 
-  parsedData := parseData(data.Webpage, data.Selector)
-
-  if (len(parsedData) == 0) {
-    response = ResponseData{"no data", parsedData}
-    json.NewEncoder(w).Encode(response)
-
-    return
-  }
-
-  response = ResponseData{"done", parsedData}
-
-  json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(response)
 }
 
 func parseData(url string, selector string) []string {
-  var data []string
+	var data []string
 
-  c := colly.NewCollector()
+	c := colly.NewCollector()
 
 	c.OnHTML(selector, func(e *colly.HTMLElement) {
-    data = append(data, e.Text)
+		data = append(data, e.Text)
 	})
 
-  c.Visit(url)
+	c.Visit(url)
 
-  return data
+	return data
 }

@@ -74,14 +74,6 @@ class Elaparse {
 
     window.addEventListener('click', async e => {
       const { target } = e;
-
-      if (target.id !== 'app-close') return
-
-      try {
-        await fetch('/api/close')
-      } finally {
-        alert('App is closed')
-      }
     })
   }
 }
